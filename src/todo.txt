@@ -1,0 +1,20 @@
+//TODO
+Add employee manager relationship.
+Each employee should have a manager. 
+Caputre State and Country for each employee. 
+Add ability to capture job profile for employee. List of job profiles can be predefined for now. 
+Employee Type should be Employee or Contractor. For contractors, a vendor name can be assigned. List of vendors can be predefined for now. 
+
+
+Create a vendor entity as well to capture vendor details. Use your best guess to predict the fields needed for vendor.
+
+Hourly rate shoudl be captured for each employee
+
+
+implement functionality to capture timesheets 
+When an employee logs in, he see his timesheet. 
+Timesheet has days in columns and projects in rows. 
+Only show projects that employee allocated to
+employee can only enter a max time of 24 hours. 
+When a manager logs in, he can see the time for all his employees in a grid for a selected month
+

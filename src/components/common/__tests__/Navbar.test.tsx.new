@@ -1,0 +1,91 @@
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, useLocation } from 'react-router-dom';
+import Navbar from '../Navbar';
+
+// Mock the react-router-dom's useLocation
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useLocation: jest.fn()
+  };
+});
+
+describe('Navbar', () => {
+  beforeEach(() => {
+    (useLocation as jest.Mock).mockReturnValue({ pathname: '/' });
+  });
+
+  test('renders the application name', () => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+    
+    expect(screen.getByText('Ledger UI')).toBeInTheDocument();
+  });
+
+  test('renders navigation links', () => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+    
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Employees')).toBeInTheDocument();
+    expect(screen.getByText('Projects')).toBeInTheDocument();
+    expect(screen.getByText('Allocations')).toBeInTheDocument();
+    expect(screen.getByText('Time Entries')).toBeInTheDocument();
+  });
+
+  test('highlights the active link based on current route', () => {
+    // First mock Dashboard as active
+    (useLocation as jest.Mock).mockReturnValue({ pathname: '/' });
+    
+    const { rerender } = render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+    
+    // Dashboard link should have active class
+    const dashboardLink = screen.getByText('Dashboard').closest('a');
+    expect(dashboardLink).toHaveClass('bg-gray-900');
+    
+    // Now mock Employees as active
+    (useLocation as jest.Mock).mockReturnValue({ pathname: '/employees' });
+    
+    rerender(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+    
+    // Employees link should have active class
+    const employeesLink = screen.getByText('Employees').closest('a');
+    expect(employeesLink).toHaveClass('bg-gray-900');
+  });
+
+  test('renders user menu', () => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+    
+    expect(screen.getByText('Admin User')).toBeInTheDocument();
+  });
+
+  test('renders mobile menu button', () => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+    
+    expect(screen.getByLabelText('Open menu')).toBeInTheDocument();
+  });
+});

@@ -1,0 +1,475 @@
+import React, { useState, useEffect } from 'react';
+import { Employee, Employe        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+            Department
+          </label>
+          <input
+            type="text"
+            id="department"
+            name="department"
+            value={formData.department}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="position" className="block text-sm font-medium text-gray-700">
+            Position
+          </label>
+          <input
+            type="text"
+            id="position"
+            name="position"
+            value={formData.position || ''}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="hireDate" className="block text-sm font-medium text-gray-700">
+            Hire Date
+          </label>
+          <input
+            type="date"
+            id="hireDate"
+            name="hireDate"
+            value={formData.hireDate ? formData.hireDate.split('T')[0] : ''}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+            Image URL
+          </label>
+          <input
+            type="text"
+            id="imageUrl"
+            name="imageUrl"
+            value={formData.imageUrl || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            placeholder="https://example.com/photo.jpg"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="managerId" className="block text-sm font-medium text-gray-700">
+            Manager
+          </label>
+          <select
+            id="managerId"
+            name="managerId"
+            value={formData.managerId || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          >
+            <option value="">No Manager</option>
+            {loadingEmployees ? (
+              <option disabled>Loading employees...</option>
+            ) : (
+              potentialManagers.map((manager) => (
+                <option key={manager.id} value={manager.id}>
+                  {manager.name} - {manager.position || manager.title}
+                </option>
+              ))
+            )}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="jobProfile" className="block text-sm font-medium text-gray-700">
+            Job Profile
+          </label>
+          <select
+            id="jobProfile"
+            name="jobProfile"
+            value={formData.jobProfile || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          >
+            <option value="">Select Job Profile</option>
+            {JOB_PROFILES.map((profile) => (
+              <option key={profile} value={profile}>
+                {profile}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+            State/Province
+          </label>
+          <input
+            type="text"
+            id="state"
+            name="state"
+            value={formData.state || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+            Country
+          </label>
+          <input
+            type="text"
+            id="country"
+            name="country"
+            value={formData.country || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>LES } from '../../types/employee';
+import { useEmployees } from '../../hooks/useEmployees';
+import Button from '../common/Button';
+
+interface EmployeeFormProps {
+  employee?: Partial<Employee>;
+  onSubmit: (employee: Omit<Employee, 'id'>) => void;
+  onCancel: () => void;
+  loading?: boolean;
+}
+
+const initialEmployee: Omit<Employee, 'id'> = {
+  name: '',
+  email: '',
+  department: '',
+  position: '',
+  title: '',
+  hireDate: new Date().toISOString().split('T')[0],
+  imageUrl: '',
+  status: 'active',
+  costRate: 0,
+  capacity: 40,
+  // New fields
+  managerId: '',
+  state: '',
+  country: '',
+  jobProfile: '',
+  employeeType: 'employee'
+};
+
+const EmployeeForm: React.FC<EmployeeFormProps> = ({
+  employee,
+  onSubmit,
+  onCancel,
+  loading = false
+}) => {
+  const [formData, setFormData] = useState<Omit<Employee, 'id'>>(
+    employee ? { ...initialEmployee, ...employee } : initialEmployee
+  );
+  const { employees, loading: loadingEmployees } = useEmployees();
+
+  // Update form data when employee changes
+  useEffect(() => {
+    if (employee) {
+      setFormData({ ...initialEmployee, ...employee });
+    }
+  }, [employee]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value ? parseFloat(value) : 0 }));
+  };
+
+  const handleEmployeeTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as EmployeeType;
+    setFormData((prev) => ({ 
+      ...prev, 
+      employeeType: value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  // Filter out the current employee from potential managers to prevent circular references
+  const potentialManagers = employees.filter(emp => emp.id !== employee?.id);
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+            Department
+          </label>
+          <input
+            type="text"
+            id="department"
+            name="department"
+            value={formData.department}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="position" className="block text-sm font-medium text-gray-700">
+            Position
+          </label>
+          <input
+            type="text"
+            id="position"
+            name="position"
+            value={formData.position || ''}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="hireDate" className="block text-sm font-medium text-gray-700">
+            Hire Date
+          </label>
+          <input
+            type="date"
+            id="hireDate"
+            name="hireDate"
+            value={formData.hireDate ? formData.hireDate.split('T')[0] : ''}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
+            Image URL
+          </label>
+          <input
+            type="text"
+            id="imageUrl"
+            name="imageUrl"
+            value={formData.imageUrl || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            placeholder="https://example.com/photo.jpg"
+          />
+        </div>
+
+        {/* New fields */}
+        <div>
+          <label htmlFor="managerId" className="block text-sm font-medium text-gray-700">
+            Manager
+          </label>
+          <select
+            id="managerId"
+            name="managerId"
+            value={formData.managerId || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          >
+            <option value="">No Manager</option>
+            {loadingEmployees ? (
+              <option disabled>Loading employees...</option>
+            ) : (
+              potentialManagers.map((manager) => (
+                <option key={manager.id} value={manager.id}>
+                  {manager.name} - {manager.position || manager.title}
+                </option>
+              ))
+            )}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="jobProfile" className="block text-sm font-medium text-gray-700">
+            Job Profile
+          </label>
+          <select
+            id="jobProfile"
+            name="jobProfile"
+            value={formData.jobProfile || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          >
+            <option value="">Select Job Profile</option>
+            {JOB_PROFILES.map((profile) => (
+              <option key={profile} value={profile}>
+                {profile}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+            State/Province
+          </label>
+          <input
+            type="text"
+            id="state"
+            name="state"
+            value={formData.state || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+            Country
+          </label>
+          <input
+            type="text"
+            id="country"
+            name="country"
+            value={formData.country || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="employeeType" className="block text-sm font-medium text-gray-700">
+            Employee Type
+          </label>
+          <select
+            id="employeeType"
+            name="employeeType"
+            value={formData.employeeType}
+            onChange={handleEmployeeTypeChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          >
+            <option value="employee">Employee</option>
+            <option value="contractor">Contractor</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="costRate" className="block text-sm font-medium text-gray-700">
+            Cost Rate
+          </label>
+          <input
+            type="number"
+            id="costRate"
+            name="costRate"
+            value={formData.costRate || 0}
+            onChange={handleNumberChange}
+            min="0"
+            step="0.01"
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="capacity" className="block text-sm font-medium text-gray-700">
+            Capacity (hours/week)
+          </label>
+          <input
+            type="number"
+            id="capacity"
+            name="capacity"
+            value={formData.capacity || 40}
+            onChange={handleNumberChange}
+            min="0"
+            max="168"
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end space-x-3">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          disabled={loading}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          loading={loading}
+          disabled={loading}
+        >
+          {employee && employee.id ? 'Update Employee' : 'Add Employee'}
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+export default EmployeeForm;
