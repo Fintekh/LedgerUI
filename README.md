@@ -171,15 +171,8 @@ This application integrates with the Formance Ledger v2 API, providing:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. Check the existing issues in the repository
-2. Create a new issue with detailed information
-3. Ensure you're using the latest version of the application
 
 ## 🔮 Future Enhancements
 
@@ -188,4 +181,4 @@ If you encounter any issues or have questions:
 - Advanced filtering and search
 - Export functionality
 - Multi-tenant support
-- Mobile application
+
